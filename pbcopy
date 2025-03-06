@@ -1,0 +1,13 @@
+
+> load-balancer-log-viewer@0.0.0 build
+> tsc -b && vite build
+
+src/components/log-table/columnDefinitions.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/log-table/columnDefinitions.tsx(2,30): error TS6133: 'FilterFn' is declared but its value is never read.
+src/components/log-table/columnDefinitions.tsx(20,5): error TS2322: Type '"timestampRangeFilter"' is not assignable to type 'FilterFnOption<LogEntry> | undefined'.
+src/components/log-table/columnDefinitions.tsx(83,5): error TS2322: Type '"numberRangeFilter"' is not assignable to type 'FilterFnOption<LogEntry> | undefined'.
+src/components/log-table/LogViewerContainer.tsx(124,5): error TS2322: Type '(filters: ColumnFiltersState) => void' is not assignable to type 'OnChangeFn<ColumnFiltersState>'.
+  Types of parameters 'filters' and 'updaterOrValue' are incompatible.
+    Type 'Updater<ColumnFiltersState>' is not assignable to type 'ColumnFiltersState'.
+      Type '(old: ColumnFiltersState) => ColumnFiltersState' is not assignable to type 'ColumnFilter[]'.
+src/components/log-table/TextFilter.tsx(15,35): error TS2503: Cannot find namespace 'NodeJS'.
