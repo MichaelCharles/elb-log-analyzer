@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Column } from '@tanstack/react-table';
-import { LogEntry } from '../../types/LogTypes';
 
 interface TextFilterProps {
-  column: Column<LogEntry, unknown>;
+  column: Column<any, unknown>;
   placeholder?: string;
 }
 

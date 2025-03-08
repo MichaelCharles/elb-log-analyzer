@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Column } from '@tanstack/react-table';
-import { LogEntry } from '../../types/LogTypes';
 
 interface DateRangeFilterProps {
-  column: Column<LogEntry, unknown>;
+  column: Column<any, unknown>;
 }
 
 const DateRangeFilter: React.FC<DateRangeFilterProps> = ({ column }) => {

@@ -1,10 +1,24 @@
 import { ColumnFiltersState } from '@tanstack/react-table';
 
-// Define the log entry interface
-export interface LogEntry {
-  protocol: string;
+// Log type options
+export type LogTypeOption = 'access' | 'connection';
+
+// Log type display names
+export const logTypeDisplayNames: Record<LogTypeOption, string> = {
+  access: 'Access Logs',
+  connection: 'Connection Logs'
+};
+
+// Base log entry interface with common fields
+export interface BaseLogEntry {
   timestamp: string;
   elb: string;
+  rawLog: string;
+}
+
+// Access log entry interface
+export interface AccessLogEntry extends BaseLogEntry {
+  protocol: string;
   clientAddress: string;
   targetAddress: string;
   method: string;
@@ -15,8 +29,24 @@ export interface LogEntry {
   responseSize: string;
   tlsCipher: string;
   tlsProtocol: string;
-  rawLog: string;
 }
+
+// Connection log entry interface
+export interface ConnectionLogEntry extends BaseLogEntry {
+  clientIp: string;
+  clientPort: string;
+  listenerPort: string;
+  tlsProtocol: string;
+  tlsCipher: string;
+  tlsHandshakeLatency: string;
+  leafClientCertSubject: string;
+  leafClientCertValidity: string;
+  leafClientCertSerialNumber: string;
+  tlsVerifyStatus: string;
+}
+
+// Union type for all log entry types
+export type LogEntry = AccessLogEntry | ConnectionLogEntry;
 
 // Table filtering state types
 export interface LogFilterState {

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Column } from '@tanstack/react-table';
-import { LogEntry } from '../../types/LogTypes';
 
 interface NumberRangeFilterProps {
-  column: Column<LogEntry, unknown>;
+  column: Column<any, unknown>;
   placeholder?: {
     min: string;
     max: string;

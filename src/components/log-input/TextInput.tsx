@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogEntry } from '../../types/LogTypes';
+import { LogEntry, LogTypeOption } from '../../types/LogTypes';
 import { processLogs } from '../../services/LogParserService';
 
 interface TextInputProps {
@@ -9,6 +9,7 @@ interface TextInputProps {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  logType: LogTypeOption;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -18,6 +19,7 @@ const TextInput: React.FC<TextInputProps> = ({
   isLoading,
   setIsLoading,
   setError,
+  logType,
 }) => {
   const handleTextProcess = () => {
     if (!fileContent.trim()) {
@@ -29,13 +31,14 @@ const TextInput: React.FC<TextInputProps> = ({
     setError(null);
 
     try {
-      const parsedLogs = processLogs(fileContent);
+      // Process logs based on logType
+      const parsedLogs = processLogs(fileContent, logType);
       onLogsUpdated(parsedLogs);
       setIsLoading(false);
       setFileContent(''); // Clear the input after processing
     } catch (err) {
-      console.error('Error processing content:', err);
-      setError('Failed to process log content. Please check format.');
+      console.error(`Error processing ${logType} content:`, err);
+      setError(`Failed to process ${logType} log content. Please check format.`);
       setIsLoading(false);
     }
   };

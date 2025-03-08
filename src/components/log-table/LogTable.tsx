@@ -4,7 +4,8 @@ import { LogEntry } from '../../types/LogTypes';
 import TableFilter from './TableFilter';
 
 interface LogTableProps {
-  table: Table<LogEntry>;
+  // Use a type union since we need to handle both types of tables
+  table: Table<any>;
   logs: LogEntry[];
 }
 

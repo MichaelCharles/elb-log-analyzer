@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { LogEntry } from '../../types/LogTypes';
+import { LogEntry, LogTypeOption } from '../../types/LogTypes';
 import { processLogs } from '../../services/LogParserService';
 
 interface FileUploadProps {
@@ -7,6 +7,7 @@ interface FileUploadProps {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  logType: LogTypeOption;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
@@ -14,6 +15,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   isLoading,
   setIsLoading,
   setError,
+  logType,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,7 +40,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const content = e.target?.result;
       if (typeof content === 'string') {
         try {
-          const parsedLogs = processLogs(content);
+          // Process logs based on logType
+          const parsedLogs = processLogs(content, logType);
           onLogsUpdated(parsedLogs);
           setIsLoading(false);
 
@@ -48,8 +51,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
             fileInputRef.current.value = '';
           }
         } catch (err) {
-          console.error('Error processing file:', err);
-          setError('Failed to process log file. Please check format.');
+          console.error(`Error processing ${logType} log file:`, err);
+          setError(`Failed to process ${logType} log file. Please check format.`);
           setIsLoading(false);
         }
       }

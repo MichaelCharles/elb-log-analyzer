@@ -1,9 +1,8 @@
 import React from 'react';
 import { Table } from '@tanstack/react-table';
-import { LogEntry } from '../../types/LogTypes';
 
 interface TablePaginationProps {
-  table: Table<LogEntry>;
+  table: Table<any>;
 }
 
 const TablePagination: React.FC<TablePaginationProps> = ({ table }) => {
