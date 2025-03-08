@@ -5,6 +5,8 @@ import Footer from './components/layout/Footer';
 import ControlPanel from './components/log-input/ControlPanel';
 import StatisticsPanel from './components/statistics/StatisticsPanel';
 import LogViewerContainer from './components/log-table/LogViewerContainer';
+import { TimezoneProvider } from './services/TimezoneContext';
+import TimezoneSelector from './components/layout/TimezoneSelector';
 
 const App: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -44,18 +46,24 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-full">
-      <Header />
+    <TimezoneProvider>
+      <div className="container mx-auto p-4 max-w-full">
+        <Header />
+        
+        <div className="flex justify-end mb-4">
+          <TimezoneSelector />
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <ControlPanel onLogsUpdated={handleLogsUpdated} />
-        <StatisticsPanel logs={logs} onClearData={handleClearData} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <ControlPanel onLogsUpdated={handleLogsUpdated} />
+          <StatisticsPanel logs={logs} onClearData={handleClearData} />
+        </div>
+
+        <LogViewerContainer logs={logs} />
+
+        <Footer />
       </div>
-
-      <LogViewerContainer logs={logs} />
-
-      <Footer />
-    </div>
+    </TimezoneProvider>
   );
 };
 

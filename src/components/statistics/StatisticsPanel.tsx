@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { LogEntry } from '../../types/LogTypes';
+import { LogEntry, timezoneDisplayNames } from '../../types/LogTypes';
+import { useTimezone } from '../../services/TimezoneContext';
 
 interface StatisticsPanelProps {
   logs: LogEntry[];
@@ -7,6 +8,9 @@ interface StatisticsPanelProps {
 }
 
 const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData }) => {
+  // Get timezone context
+  const { timezone, formatTimestamp } = useTimezone();
+
   // Calculate top client IPs
   const topClientIps = useMemo(() => {
     if (logs.length === 0) return [];
@@ -34,23 +38,11 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData }) 
       if (log.timestamp > maxTimestamp) maxTimestamp = log.timestamp;
     });
     
-    // Format timestamps to JST
-    const formatToJST = (timestamp: string) => {
-      try {
-        const date = new Date(timestamp);
-        const jstDate = new Date(date.getTime() + (9 * 60 * 60 * 1000));
-        return jstDate.toISOString().replace('T', ' ').substring(0, 23);
-      } catch (e) {
-        console.error('Error formatting timestamp:', e);
-        return timestamp;
-      }
-    };
-    
     return {
-      min: formatToJST(minTimestamp),
-      max: formatToJST(maxTimestamp)
+      min: formatTimestamp(minTimestamp),
+      max: formatTimestamp(maxTimestamp)
     };
-  }, [logs]);
+  }, [logs, formatTimestamp]);
   
   // Calculate size statistics
   const sizeStats = useMemo(() => {
@@ -136,7 +128,9 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData }) 
       
       {logs.length > 0 && (
         <>
-          <h3 className="text-lg font-medium mt-4 mb-2">Time Range (JST)</h3>
+          <h3 className="text-lg font-medium mt-4 mb-2">
+            Time Range ({timezoneDisplayNames[timezone]})
+          </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-purple-100 p-3 rounded">
               <p className="text-sm text-gray-600">Earliest Timestamp</p>

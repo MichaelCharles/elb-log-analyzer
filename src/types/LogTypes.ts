@@ -27,3 +27,15 @@ export interface LogFilterState {
     pageSize: number;
   };
 }
+
+// Timezone options
+export type TimezoneOption = 'utc' | 'et' | 'cet' | 'jst' | 'local';
+
+// Timezone display names
+export const timezoneDisplayNames: Record<TimezoneOption, string> = {
+  utc: 'UTC',
+  et: 'ET (UTC-5/-4)',
+  cet: 'CET (UTC+1/+2)',
+  jst: 'JST (UTC+9)',
+  local: 'Local Browser Time'
+};
