@@ -42,12 +42,12 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                         }[header.column.getIsSorted() as string] ?? ''}
                       </span>
                     </div>
-                    
+
                     {header.column.getCanGroup() && (
                       <button
                         onClick={e => {
                           e.stopPropagation();
-                          
+
                           // Toggle grouping for this column
                           const groupingSet = new Set(table.getState().grouping);
                           if (groupingSet.has(header.column.id)) {
@@ -94,7 +94,10 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className={`hover:bg-gray-50 ${row.getIsGrouped() ? 'bg-gray-100 font-medium' : ''}`}>
+            <tr
+              key={row.id}
+              className={`hover:bg-gray-50 ${row.getIsGrouped() ? 'bg-gray-100 font-medium' : ''}`}
+            >
               {row.getVisibleCells().map(cell => {
                 if (cell.getIsGrouped()) {
                   // Group cell
@@ -108,7 +111,8 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                       <div className="flex items-center">
                         <span className="mr-2">{row.getIsExpanded() ? '▼' : '▶'}</span>
                         <span className="font-medium">
-                          {String(cell.column.columnDef.header || cell.column.id)}: {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {String(cell.column.columnDef.header || cell.column.id)}:{' '}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </span>
                         <span className="ml-2 text-gray-500">
                           ({row.subRows.length} item{row.subRows.length !== 1 ? 's' : ''})
@@ -131,7 +135,9 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                   );
                 } else if (cell.getIsPlaceholder()) {
                   // Placeholder cell (for grouped rows)
-                  return <td key={cell.id} className="px-3 py-2 text-sm text-gray-400 border-b"></td>;
+                  return (
+                    <td key={cell.id} className="px-3 py-2 text-sm text-gray-400 border-b"></td>
+                  );
                 } else {
                   // Regular cell
                   return (

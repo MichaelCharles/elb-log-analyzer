@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
-import { LogEntry, LogTypeOption, timezoneDisplayNames, logTypeDisplayNames } from '../../types/LogTypes';
+import {
+  LogEntry,
+  LogTypeOption,
+  timezoneDisplayNames,
+  logTypeDisplayNames,
+} from '../../types/LogTypes';
 import { useTimezone } from '../../services/TimezoneContext';
 
 interface StatisticsPanelProps {
@@ -33,64 +38,65 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
   }, [logs, logType]);
-  
+
   // Calculate min and max timestamps
   const timestampStats = useMemo(() => {
     if (logs.length === 0) return { min: '', max: '' };
-    
+
     let minTimestamp = logs[0].timestamp;
     let maxTimestamp = logs[0].timestamp;
-    
+
     logs.forEach(log => {
       if (log.timestamp < minTimestamp) minTimestamp = log.timestamp;
       if (log.timestamp > maxTimestamp) maxTimestamp = log.timestamp;
     });
-    
+
     return {
       min: formatTimestamp(minTimestamp),
-      max: formatTimestamp(maxTimestamp)
+      max: formatTimestamp(maxTimestamp),
     };
   }, [logs, formatTimestamp]);
-  
+
   // Calculate size statistics for access logs
   const sizeStats = useMemo(() => {
-    if (logs.length === 0 || logType !== 'access') return { 
-      totalReq: 0, 
-      totalResp: 0,
-      avgReq: 0,
-      avgResp: 0,
-      maxReq: 0,
-      maxResp: 0
-    };
-    
+    if (logs.length === 0 || logType !== 'access')
+      return {
+        totalReq: 0,
+        totalResp: 0,
+        avgReq: 0,
+        avgResp: 0,
+        maxReq: 0,
+        maxResp: 0,
+      };
+
     let totalReqSize = 0;
     let totalRespSize = 0;
     let maxReqSize = 0;
     let maxRespSize = 0;
     let count = 0;
-    
+
     logs.forEach(log => {
       if ('requestSize' in log && 'responseSize' in log) {
         const reqSize = parseInt(log.requestSize) || 0;
         const respSize = parseInt(log.responseSize) || 0;
-        
+
         totalReqSize += reqSize;
         totalRespSize += respSize;
-        
+
         if (reqSize > maxReqSize) maxReqSize = reqSize;
         if (respSize > maxRespSize) maxRespSize = respSize;
-        
+
         count++;
       }
     });
-    
+
     return {
       totalReq: totalReqSize,
       totalResp: totalRespSize,
       avgReq: count > 0 ? Math.round(totalReqSize / count) : 0,
       avgResp: count > 0 ? Math.round(totalRespSize / count) : 0,
       maxReq: maxReqSize,
-      maxResp: maxRespSize
+      maxResp: maxRespSize,
     };
   }, [logs, logType]);
 
@@ -113,56 +119,79 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
           <p className="text-sm text-gray-600">Total Logs</p>
           <p className="text-2xl font-bold">{logs.length}</p>
         </div>
-        
+
         {/* HTTP status codes stats only for access logs */}
         {logType === 'access' && (
           <>
             <div className="bg-green-100 p-3 rounded">
               <p className="text-sm text-gray-600">Success (2xx)</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'statusCode' in log && log.statusCode >= '200' && log.statusCode < '300').length}
+                {
+                  logs.filter(
+                    log => 'statusCode' in log && log.statusCode >= '200' && log.statusCode < '300'
+                  ).length
+                }
               </p>
             </div>
             <div className="bg-blue-100 p-3 rounded">
               <p className="text-sm text-gray-600">Redirection (3xx)</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'statusCode' in log && log.statusCode >= '300' && log.statusCode < '400').length}
+                {
+                  logs.filter(
+                    log => 'statusCode' in log && log.statusCode >= '300' && log.statusCode < '400'
+                  ).length
+                }
               </p>
             </div>
             <div className="bg-yellow-100 p-3 rounded">
               <p className="text-sm text-gray-600">Client Error (4xx)</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'statusCode' in log && log.statusCode >= '400' && log.statusCode < '500').length}
+                {
+                  logs.filter(
+                    log => 'statusCode' in log && log.statusCode >= '400' && log.statusCode < '500'
+                  ).length
+                }
               </p>
             </div>
             <div className="bg-red-100 p-3 rounded">
               <p className="text-sm text-gray-600">Server Error (5xx)</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'statusCode' in log && log.statusCode >= '500' && log.statusCode < '600').length}
+                {
+                  logs.filter(
+                    log => 'statusCode' in log && log.statusCode >= '500' && log.statusCode < '600'
+                  ).length
+                }
               </p>
             </div>
           </>
         )}
-        
+
         {/* Connection status stats for connection logs */}
         {logType === 'connection' && (
           <>
             <div className="bg-green-100 p-3 rounded">
               <p className="text-sm text-gray-600">Successful Connections</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus === 'Success').length}
+                {
+                  logs.filter(log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus === 'Success')
+                    .length
+                }
               </p>
             </div>
             <div className="bg-red-100 p-3 rounded">
               <p className="text-sm text-gray-600">Failed Connections</p>
               <p className="text-2xl font-bold">
-                {logs.filter(log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus.startsWith('Failed')).length}
+                {
+                  logs.filter(
+                    log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus.startsWith('Failed')
+                  ).length
+                }
               </p>
             </div>
           </>
         )}
       </div>
-      
+
       {logs.length > 0 && (
         <>
           <h3 className="text-lg font-medium mt-4 mb-2">
@@ -178,7 +207,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               <p className="text-base font-bold">{timestampStats.max}</p>
             </div>
           </div>
-          
+
           {/* Show size statistics only for access logs */}
           {logType === 'access' && (
             <>
@@ -213,7 +242,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               </div>
             </>
           )}
-          
+
           {/* Show connection time statistics for connection logs */}
           {logType === 'connection' && (
             <>
@@ -225,13 +254,22 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
                     <div>
                       <p className="text-xs text-gray-500">Success</p>
                       <p className="text-sm font-medium">
-                        {logs.filter(log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus === 'Success').length}
+                        {
+                          logs.filter(
+                            log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus === 'Success'
+                          ).length
+                        }
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Failed</p>
                       <p className="text-sm font-medium">
-                        {logs.filter(log => 'tlsVerifyStatus' in log && log.tlsVerifyStatus.startsWith('Failed')).length}
+                        {
+                          logs.filter(
+                            log =>
+                              'tlsVerifyStatus' in log && log.tlsVerifyStatus.startsWith('Failed')
+                          ).length
+                        }
                       </p>
                     </div>
                   </div>
@@ -242,10 +280,16 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
                     <div>
                       <p className="text-xs text-gray-500">Max</p>
                       <p className="text-sm font-medium">
-                        {Math.max(...logs
-                          .filter(log => 'tlsHandshakeLatency' in log && log.tlsHandshakeLatency)
-                          .map(log => 'tlsHandshakeLatency' in log ? parseFloat(log.tlsHandshakeLatency) || 0 : 0)
-                        ).toFixed(3)} s
+                        {Math.max(
+                          ...logs
+                            .filter(log => 'tlsHandshakeLatency' in log && log.tlsHandshakeLatency)
+                            .map(log =>
+                              'tlsHandshakeLatency' in log
+                                ? parseFloat(log.tlsHandshakeLatency) || 0
+                                : 0
+                            )
+                        ).toFixed(3)}{' '}
+                        s
                       </p>
                     </div>
                     <div>
@@ -254,9 +298,16 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
                         {(() => {
                           const times = logs
                             .filter(log => 'tlsHandshakeLatency' in log && log.tlsHandshakeLatency)
-                            .map(log => 'tlsHandshakeLatency' in log ? parseFloat(log.tlsHandshakeLatency) || 0 : 0);
-                          return times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(3) : '0.000';
-                        })()} s
+                            .map(log =>
+                              'tlsHandshakeLatency' in log
+                                ? parseFloat(log.tlsHandshakeLatency) || 0
+                                : 0
+                            );
+                          return times.length
+                            ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(3)
+                            : '0.000';
+                        })()}{' '}
+                        s
                       </p>
                     </div>
                   </div>

@@ -6,7 +6,7 @@ export type LogTypeOption = 'access' | 'connection';
 // Log type display names
 export const logTypeDisplayNames: Record<LogTypeOption, string> = {
   access: 'Access Logs',
-  connection: 'Connection Logs'
+  connection: 'Connection Logs',
 };
 
 // Base log entry interface with common fields
@@ -67,5 +67,5 @@ export const timezoneDisplayNames: Record<TimezoneOption, string> = {
   et: 'ET (UTC-5/-4)',
   cet: 'CET (UTC+1/+2)',
   jst: 'JST (UTC+9)',
-  local: 'Local Browser Time'
+  local: 'Local Browser Time',
 };

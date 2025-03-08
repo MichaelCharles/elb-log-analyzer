@@ -121,7 +121,7 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
 
   // Setup React Table instance based on log type
   let table;
-  
+
   // @ts-ignore - This is a type issue with tanstack/react-table, suppressing for now
   if (logType === 'access') {
     // Type assertion to handle access logs

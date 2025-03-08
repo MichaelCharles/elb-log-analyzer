@@ -27,9 +27,5 @@ export const LogTypeProvider: React.FC<LogTypeProviderProps> = ({ children }) =>
     setLogType,
   };
 
-  return (
-    <LogTypeContext.Provider value={contextValue}>
-      {children}
-    </LogTypeContext.Provider>
-  );
+  return <LogTypeContext.Provider value={contextValue}>{children}</LogTypeContext.Provider>;
 };

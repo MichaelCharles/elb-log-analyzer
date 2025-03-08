@@ -7,7 +7,8 @@ interface GroupingSelectorProps {
 }
 
 const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
-  const columns = table.getAllColumns()
+  const columns = table
+    .getAllColumns()
     .filter(column => column.getCanGroup())
     .sort((a, b) => {
       // Simpler approach to get header text

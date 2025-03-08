@@ -8,7 +8,10 @@ const accessColumnHelper = createColumnHelper<AccessLogEntry>();
 const connectionColumnHelper = createColumnHelper<ConnectionLogEntry>();
 
 // Define access log table columns
-const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => string, timezone: string) => [
+const getAccessColumnDefinitions = (
+  formatTimestamp: (timestamp: string) => string,
+  timezone: string
+) => [
   accessColumnHelper.accessor(row => row.protocol, {
     id: 'protocol',
     header: () => 'Protocol',
@@ -20,15 +23,16 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
     id: 'timestamp',
     // Dynamic header text with current timezone
     header: () => {
-      const tzName = (timezone in timezoneDisplayNames) ? 
-        timezoneDisplayNames[timezone as keyof typeof timezoneDisplayNames] : 
-        'UTC';
+      const tzName =
+        timezone in timezoneDisplayNames
+          ? timezoneDisplayNames[timezone as keyof typeof timezoneDisplayNames]
+          : 'UTC';
       return `Timestamp (${tzName})`;
     },
     cell: info => {
       const timestamp = info.getValue();
       if (!timestamp) return '';
-      
+
       // Use the timezone context formatter
       return formatTimestamp(timestamp);
     },
@@ -116,13 +120,17 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
 ];
 
 // Define connection log table columns
-const getConnectionColumnDefinitions = (formatTimestamp: (timestamp: string) => string, timezone: string) => [
+const getConnectionColumnDefinitions = (
+  formatTimestamp: (timestamp: string) => string,
+  timezone: string
+) => [
   connectionColumnHelper.accessor(row => row.timestamp, {
     id: 'timestamp',
     header: () => {
-      const tzName = (timezone in timezoneDisplayNames) ? 
-        timezoneDisplayNames[timezone as keyof typeof timezoneDisplayNames] : 
-        'UTC';
+      const tzName =
+        timezone in timezoneDisplayNames
+          ? timezoneDisplayNames[timezone as keyof typeof timezoneDisplayNames]
+          : 'UTC';
       return `Timestamp (${tzName})`;
     },
     cell: info => {
@@ -177,19 +185,40 @@ const getConnectionColumnDefinitions = (formatTimestamp: (timestamp: string) => 
     filterFn: 'numberRangeFilter' as any,
     enableColumnFilter: true,
   }),
+  connectionColumnHelper.accessor(row => row.leafClientCertSubject, {
+    id: 'leafClientCertSubject',
+    header: () => 'Cert Subject',
+    cell: info => info.getValue() || '-',
+    filterFn: 'includesString',
+    enableColumnFilter: true,
+  }),
+  connectionColumnHelper.accessor(row => row.leafClientCertValidity, {
+    id: 'leafClientCertValidity',
+    header: () => 'Cert Validity',
+    cell: info => info.getValue() || '-',
+    filterFn: 'includesString',
+    enableColumnFilter: true,
+  }),
+  connectionColumnHelper.accessor(row => row.leafClientCertSerialNumber, {
+    id: 'leafClientCertSerialNumber',
+    header: () => 'Cert Serial Number',
+    cell: info => info.getValue() || '-',
+    filterFn: 'includesString',
+    enableColumnFilter: true,
+  }),
   connectionColumnHelper.accessor(row => row.tlsVerifyStatus, {
     id: 'tlsVerifyStatus',
     header: () => 'Verify Status',
     cell: info => {
       const value = info.getValue();
       let bgColor = 'bg-gray-100';
-      
+
       if (value) {
         if (value === 'Success') bgColor = 'bg-green-100';
         if (value.startsWith('Failed')) bgColor = 'bg-red-100';
         return <span className={`px-2 py-1 rounded ${bgColor}`}>{value}</span>;
       }
-      
+
       return <span className={`px-2 py-1 rounded ${bgColor}`}>-</span>;
     },
     filterFn: 'equals',
@@ -204,7 +233,7 @@ export const getColumnDefinitions = () => {
   // Get context
   const { timezone, formatTimestamp } = useTimezone();
   const { logType } = useLogType();
-  
+
   // Return columns based on log type
   if (logType === 'access') {
     return getAccessColumnDefinitions(formatTimestamp, timezone);

@@ -8,7 +8,15 @@ const Header: React.FC = () => {
           <svg viewBox="0 0 32 32" className="w-full h-full">
             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
               <circle stroke="#4299E1" strokeWidth="3" cx="13" cy="13" r="8"></circle>
-              <line x1="19" y1="19" x2="27" y2="27" stroke="#4299E1" strokeWidth="4" strokeLinecap="round"></line>
+              <line
+                x1="19"
+                y1="19"
+                x2="27"
+                y2="27"
+                stroke="#4299E1"
+                strokeWidth="4"
+                strokeLinecap="round"
+              ></line>
             </g>
           </svg>
         </div>

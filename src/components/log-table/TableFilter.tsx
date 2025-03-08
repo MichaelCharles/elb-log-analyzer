@@ -40,28 +40,32 @@ const TableFilter: React.FC<TableFilterProps> = ({ column, logs }) => {
 
     // For responseSize column, use NumberRangeFilter
     if (column.id === 'responseSize' || column.id === 'requestSize') {
-      return <NumberRangeFilter column={column} placeholder={{ min: 'Min size', max: 'Max size' }} />;
+      return (
+        <NumberRangeFilter column={column} placeholder={{ min: 'Min size', max: 'Max size' }} />
+      );
     }
   }
-  
+
   // Connection log columns
   if (logType === 'connection') {
     if (column.id === 'clientIp') {
       return <TextFilter column={column} placeholder="Filter client IP..." />;
     }
-    
+
     if (column.id === 'tlsHandshakeLatency') {
-      return <NumberRangeFilter column={column} placeholder={{ min: 'Min time', max: 'Max time' }} />;
+      return (
+        <NumberRangeFilter column={column} placeholder={{ min: 'Min time', max: 'Max time' }} />
+      );
     }
-    
+
     if (column.id === 'tlsVerifyStatus') {
       return <TextFilter column={column} placeholder="Filter status..." />;
     }
-    
+
     if (column.id === 'clientPort') {
       return <TextFilter column={column} placeholder="Filter client port..." />;
     }
-    
+
     if (column.id === 'listenerPort') {
       return <TextFilter column={column} placeholder="Filter listener port..." />;
     }

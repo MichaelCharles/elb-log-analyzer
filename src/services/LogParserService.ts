@@ -67,7 +67,7 @@ export const parseAccessLogLine = (line: string): AccessLogEntry | null => {
     if (parts.length > 10) {
       requestSize = parts[10];
     }
-    
+
     // Extract response size - typically at position 11
     let responseSize = '';
     if (parts.length > 11) {
@@ -137,10 +137,10 @@ export const parseConnectionLogLine = (line: string): ConnectionLogEntry | null 
     const leafClientCertSubject = parts[7] !== '-' ? parts[7] : '';
     const leafClientCertValidity = parts[8] !== '-' ? parts[8] : '';
     const leafClientCertSerialNumber = parts[9] !== '-' ? parts[9] : '';
-    
+
     // Get TLS verification status, which should be at parts[10]
     const tlsVerifyStatus = parts.length > 10 ? (parts[10] !== '-' ? parts[10] : '') : '';
-    
+
     // Get the load balancer name - use consistent field extraction for base fields
     // In connection logs, the ELB name isn't directly included
     const elb = ''; // Not available in connection logs
