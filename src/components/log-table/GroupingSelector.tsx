@@ -10,12 +10,9 @@ const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
   const columns = table.getAllColumns()
     .filter(column => column.getCanGroup())
     .sort((a, b) => {
-      const headerA = typeof a.columnDef.header === 'function' 
-        ? a.columnDef.header() 
-        : a.columnDef.header?.toString() || '';
-      const headerB = typeof b.columnDef.header === 'function' 
-        ? b.columnDef.header() 
-        : b.columnDef.header?.toString() || '';
+      // Simpler approach to get header text
+      const headerA = String(a.columnDef.header || a.id);
+      const headerB = String(b.columnDef.header || b.id);
       return headerA.localeCompare(headerB);
     });
 
@@ -33,9 +30,7 @@ const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
         <option value="">None</option>
         {columns.map(column => (
           <option key={column.id} value={column.id}>
-            {typeof column.columnDef.header === 'function' 
-              ? column.columnDef.header() 
-              : column.columnDef.header}
+            {String(column.columnDef.header || column.id)}
           </option>
         ))}
       </select>

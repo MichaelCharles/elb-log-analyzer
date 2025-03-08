@@ -254,6 +254,35 @@ If you encounter issues with the grouping functionality:
 4. Confirm the state management for `grouping` and `expanded` is working correctly
 5. Test with a simple dataset to isolate complex data issues
 
+### Common Build Issues
+
+When implementing grouping, you may encounter TypeScript errors related to column headers:
+
+1. **Header Function Context Errors**: When accessing a column's header function directly:
+   ```typescript
+   // This can cause TypeScript errors as header expects props
+   column.columnDef.header() // Error: Expected 1 argument, but got 0
+   ```
+
+   **Solution**: Instead of directly calling header functions, use one of these approaches:
+   
+   ```typescript
+   // Option 1: Use flexRender (preferred when you have the context)
+   flexRender(column.columnDef.header, column.getContext())
+   
+   // Option 2: Use a simple string conversion (safer fallback)
+   String(column.columnDef.header || column.id)
+   ```
+
+2. **Type Safety with Headers**: TypeScript may report errors with header values that could be functions.
+
+   **Solution**: Always use defensive programming when working with column headers:
+   
+   ```typescript
+   // Safe header access that works with function or string headers
+   const headerText = String(column.columnDef.header || column.id);
+   ```
+
 ## Example: How Data Transformation Works
 
 For a dataset of access logs, grouping by `statusCode` might transform data like this:

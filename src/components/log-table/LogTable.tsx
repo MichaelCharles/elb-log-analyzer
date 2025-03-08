@@ -108,7 +108,7 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                       <div className="flex items-center">
                         <span className="mr-2">{row.getIsExpanded() ? '▼' : '▶'}</span>
                         <span className="font-medium">
-                          {cell.column.columnDef.header?.toString()}: {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {String(cell.column.columnDef.header || cell.column.id)}: {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </span>
                         <span className="ml-2 text-gray-500">
                           ({row.subRows.length} item{row.subRows.length !== 1 ? 's' : ''})
