@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode } from 'react';
 import { LogTypeOption } from '../types/LogTypes';
 
 interface LogTypeContextType {
@@ -11,8 +11,6 @@ const LogTypeContext = createContext<LogTypeContextType>({
   logType: 'access',
   setLogType: () => {},
 });
-
-export const useLogType = () => useContext(LogTypeContext);
 
 interface LogTypeProviderProps {
   children: ReactNode;
@@ -29,3 +27,6 @@ export const LogTypeProvider: React.FC<LogTypeProviderProps> = ({ children }) =>
 
   return <LogTypeContext.Provider value={contextValue}>{children}</LogTypeContext.Provider>;
 };
+
+// Export the context for the hook file to use
+export { LogTypeContext };

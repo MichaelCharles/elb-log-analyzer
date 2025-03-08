@@ -4,7 +4,7 @@ import { LogEntry } from '../../types/LogTypes';
 import DateRangeFilter from './DateRangeFilter';
 import TextFilter from './TextFilter';
 import NumberRangeFilter from './NumberRangeFilter';
-import { useLogType } from '../../services/LogTypeContext';
+import { useLogType } from '../../services/hooks/useLogType';
 
 interface TableFilterProps {
   column: Column<any, unknown>;

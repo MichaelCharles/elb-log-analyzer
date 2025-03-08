@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTimezone } from '../../services/TimezoneContext';
+import { useTimezone } from '../../services/hooks/useTimezone';
 import { TimezoneOption, timezoneDisplayNames } from '../../types/LogTypes';
 
 const TimezoneSelector: React.FC = () => {

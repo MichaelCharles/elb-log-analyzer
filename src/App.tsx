@@ -6,7 +6,8 @@ import ControlPanel from './components/log-input/ControlPanel';
 import StatisticsPanel from './components/statistics/StatisticsPanel';
 import LogViewerContainer from './components/log-table/LogViewerContainer';
 import { TimezoneProvider } from './services/TimezoneContext';
-import { LogTypeProvider, useLogType } from './services/LogTypeContext';
+import { LogTypeProvider } from './services/LogTypeContext';
+import { useLogType } from './services/hooks/useLogType';
 import TimezoneSelector from './components/layout/TimezoneSelector';
 import LogTypeSelector from './components/layout/LogTypeSelector';
 

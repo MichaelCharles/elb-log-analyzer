@@ -12,7 +12,7 @@ import {
   OnChangeFn,
 } from '@tanstack/react-table';
 import { LogEntry, LogTypeOption, logTypeDisplayNames } from '../../types/LogTypes';
-import { getColumnDefinitions } from './columnDefinitions';
+import { ColumnDefinitions } from './columnDefinitions';
 import GlobalSearch from './GlobalSearch';
 import LogTable from './LogTable';
 import TablePagination from './TablePagination';
@@ -119,63 +119,31 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
     [columnFilters]
   );
 
-  // Setup React Table instance based on log type
-  let table;
-
-  // @ts-ignore - This is a type issue with tanstack/react-table, suppressing for now
-  if (logType === 'access') {
-    // Type assertion to handle access logs
-    table = useReactTable({
-      data: logs as any,
-      columns: getColumnDefinitions() as any,
-      filterFns: customFilterFns,
-      state: {
-        pagination,
-        globalFilter,
-        columnFilters,
-        grouping,
-        expanded,
-      },
-      onPaginationChange: setPagination,
-      onGlobalFilterChange: setGlobalFilter,
-      onColumnFiltersChange: handleColumnFiltersChange,
-      onGroupingChange: setGrouping,
-      onExpandedChange: setExpanded,
-      globalFilterFn,
-      getCoreRowModel: getCoreRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getGroupedRowModel: getGroupedRowModel(),
-      getExpandedRowModel: getExpandedRowModel(),
-    });
-  } else {
-    // Type assertion to handle connection logs
-    table = useReactTable({
-      data: logs as any,
-      columns: getColumnDefinitions() as any,
-      filterFns: customFilterFns,
-      state: {
-        pagination,
-        globalFilter,
-        columnFilters,
-        grouping,
-        expanded,
-      },
-      onPaginationChange: setPagination,
-      onGlobalFilterChange: setGlobalFilter,
-      onColumnFiltersChange: handleColumnFiltersChange,
-      onGroupingChange: setGrouping,
-      onExpandedChange: setExpanded,
-      globalFilterFn,
-      getCoreRowModel: getCoreRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getGroupedRowModel: getGroupedRowModel(),
-      getExpandedRowModel: getExpandedRowModel(),
-    });
-  }
+  // Setup React Table instance - avoid conditional hook calls
+  const table = useReactTable({
+    data: logs as any,
+    columns: ColumnDefinitions() as any,
+    filterFns: customFilterFns,
+    state: {
+      pagination,
+      globalFilter,
+      columnFilters,
+      grouping,
+      expanded,
+    },
+    onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: handleColumnFiltersChange,
+    onGroupingChange: setGrouping,
+    onExpandedChange: setExpanded,
+    globalFilterFn,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+  });
 
   // Calculate the total filtered entries count
   const filteredRowsCount = (table as any).getFilteredRowModel().rows.length;
@@ -193,7 +161,6 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
       <GlobalSearch globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
 
       {/* Table component */}
-      {/* @ts-ignore - handle type issues with the table */}
       <LogTable table={table} logs={logs} />
 
       {/* Pagination controls */}

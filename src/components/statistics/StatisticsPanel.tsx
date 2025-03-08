@@ -5,7 +5,7 @@ import {
   timezoneDisplayNames,
   logTypeDisplayNames,
 } from '../../types/LogTypes';
-import { useTimezone } from '../../services/TimezoneContext';
+import { useTimezone } from '../../services/hooks/useTimezone';
 
 interface StatisticsPanelProps {
   logs: LogEntry[];
@@ -195,7 +195,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
       {logs.length > 0 && (
         <>
           <h3 className="text-lg font-medium mt-4 mb-2">
-            Time Range ({timezoneDisplayNames[timezone]})
+            Time Range ({timezoneDisplayNames[timezone as keyof typeof timezoneDisplayNames]})
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-purple-100 p-3 rounded">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLogType } from '../../services/LogTypeContext';
+import { useLogType } from '../../services/hooks/useLogType';
 import { LogTypeOption, logTypeDisplayNames } from '../../types/LogTypes';
 
 const LogTypeSelector: React.FC = () => {
