@@ -49,6 +49,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({ column }) => {
           value={startTimestamp}
           onChange={handleStartChange}
           className="p-1 border rounded text-xs w-full"
+          step="1"
         />
       </div>
       <div className="flex space-x-1 items-center">
@@ -58,6 +59,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({ column }) => {
           value={endTimestamp}
           onChange={handleEndChange}
           className="p-1 border rounded text-xs w-full"
+          step="1"
         />
       </div>
       {(startTimestamp || endTimestamp) && (

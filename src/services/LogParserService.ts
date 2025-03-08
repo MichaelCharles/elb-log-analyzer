@@ -62,10 +62,16 @@ export const parseLogLine = (line: string): LogEntry | null => {
       statusCode = parts[8];
     }
 
-    // Extract response size - typically at position 10
-    let responseSize = '';
+    // Extract request size - typically at position 10
+    let requestSize = '';
     if (parts.length > 10) {
-      responseSize = parts[10];
+      requestSize = parts[10];
+    }
+    
+    // Extract response size - typically at position 11
+    let responseSize = '';
+    if (parts.length > 11) {
+      responseSize = parts[11];
     }
 
     // Find the TLS information
@@ -94,6 +100,7 @@ export const parseLogLine = (line: string): LogEntry | null => {
       url,
       httpVersion,
       statusCode,
+      requestSize,
       responseSize,
       tlsCipher,
       tlsProtocol,

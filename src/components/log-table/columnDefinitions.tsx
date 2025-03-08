@@ -14,8 +14,25 @@ export const getColumnDefinitions = () => [
   }),
   columnHelper.accessor(row => row.timestamp, {
     id: 'timestamp',
-    header: () => 'Timestamp',
-    cell: info => info.getValue(),
+    header: () => 'Timestamp (JST)',
+    cell: info => {
+      const timestamp = info.getValue();
+      if (!timestamp) return '';
+      
+      try {
+        // Convert to Date object
+        const date = new Date(timestamp);
+        
+        // Format to JST (UTC+9)
+        const jstDate = new Date(date.getTime() + (9 * 60 * 60 * 1000));
+        // Format with milliseconds (replace T with space, keep up to 23 chars which includes .sss)
+        const formatted = jstDate.toISOString().replace('T', ' ').substring(0, 23);
+        return formatted;
+      } catch (e) {
+        console.error('Error formatting timestamp:', e);
+        return timestamp;
+      }
+    },
     filterFn: 'timestampRangeFilter' as FilterFnOption<LogEntry>,
     enableColumnFilter: true,
   }),
@@ -73,9 +90,16 @@ export const getColumnDefinitions = () => [
     },
     filterFn: 'equals',
   }),
+  columnHelper.accessor(row => row.requestSize, {
+    id: 'requestSize',
+    header: () => 'Req Size (B)',
+    cell: info => info.getValue(),
+    filterFn: 'numberRangeFilter' as FilterFnOption<LogEntry>,
+    enableColumnFilter: true,
+  }),
   columnHelper.accessor(row => row.responseSize, {
     id: 'responseSize',
-    header: () => 'Size (B)',
+    header: () => 'Resp Size (B)',
     cell: info => info.getValue(),
     filterFn: 'numberRangeFilter' as FilterFnOption<LogEntry>,
     enableColumnFilter: true,

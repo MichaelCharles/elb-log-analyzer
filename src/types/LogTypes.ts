@@ -11,6 +11,7 @@ export interface LogEntry {
   url: string;
   httpVersion: string;
   statusCode: string;
+  requestSize: string;
   responseSize: string;
   tlsCipher: string;
   tlsProtocol: string;

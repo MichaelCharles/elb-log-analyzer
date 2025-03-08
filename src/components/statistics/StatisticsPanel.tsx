@@ -21,6 +21,73 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData }) 
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
   }, [logs]);
+  
+  // Calculate min and max timestamps
+  const timestampStats = useMemo(() => {
+    if (logs.length === 0) return { min: '', max: '' };
+    
+    let minTimestamp = logs[0].timestamp;
+    let maxTimestamp = logs[0].timestamp;
+    
+    logs.forEach(log => {
+      if (log.timestamp < minTimestamp) minTimestamp = log.timestamp;
+      if (log.timestamp > maxTimestamp) maxTimestamp = log.timestamp;
+    });
+    
+    // Format timestamps to JST
+    const formatToJST = (timestamp: string) => {
+      try {
+        const date = new Date(timestamp);
+        const jstDate = new Date(date.getTime() + (9 * 60 * 60 * 1000));
+        return jstDate.toISOString().replace('T', ' ').substring(0, 23);
+      } catch (e) {
+        console.error('Error formatting timestamp:', e);
+        return timestamp;
+      }
+    };
+    
+    return {
+      min: formatToJST(minTimestamp),
+      max: formatToJST(maxTimestamp)
+    };
+  }, [logs]);
+  
+  // Calculate size statistics
+  const sizeStats = useMemo(() => {
+    if (logs.length === 0) return { 
+      totalReq: 0, 
+      totalResp: 0,
+      avgReq: 0,
+      avgResp: 0,
+      maxReq: 0,
+      maxResp: 0
+    };
+    
+    let totalReqSize = 0;
+    let totalRespSize = 0;
+    let maxReqSize = 0;
+    let maxRespSize = 0;
+    
+    logs.forEach(log => {
+      const reqSize = parseInt(log.requestSize) || 0;
+      const respSize = parseInt(log.responseSize) || 0;
+      
+      totalReqSize += reqSize;
+      totalRespSize += respSize;
+      
+      if (reqSize > maxReqSize) maxReqSize = reqSize;
+      if (respSize > maxRespSize) maxRespSize = respSize;
+    });
+    
+    return {
+      totalReq: totalReqSize,
+      totalResp: totalRespSize,
+      avgReq: Math.round(totalReqSize / logs.length),
+      avgResp: Math.round(totalRespSize / logs.length),
+      maxReq: maxReqSize,
+      maxResp: maxRespSize
+    };
+  }, [logs]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
@@ -66,6 +133,52 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData }) 
           </p>
         </div>
       </div>
+      
+      {logs.length > 0 && (
+        <>
+          <h3 className="text-lg font-medium mt-4 mb-2">Time Range (JST)</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-purple-100 p-3 rounded">
+              <p className="text-sm text-gray-600">Earliest Timestamp</p>
+              <p className="text-base font-bold">{timestampStats.min}</p>
+            </div>
+            <div className="bg-indigo-100 p-3 rounded">
+              <p className="text-sm text-gray-600">Latest Timestamp</p>
+              <p className="text-base font-bold">{timestampStats.max}</p>
+            </div>
+          </div>
+          
+          <h3 className="text-lg font-medium mt-4 mb-2">Size Statistics</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-green-50 p-3 rounded">
+              <p className="text-sm text-gray-600">Request Size</p>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <div>
+                  <p className="text-xs text-gray-500">Max</p>
+                  <p className="text-sm font-medium">{sizeStats.maxReq.toLocaleString()} B</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Avg</p>
+                  <p className="text-sm font-medium">{sizeStats.avgReq.toLocaleString()} B</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-blue-50 p-3 rounded">
+              <p className="text-sm text-gray-600">Response Size</p>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <div>
+                  <p className="text-xs text-gray-500">Max</p>
+                  <p className="text-sm font-medium">{sizeStats.maxResp.toLocaleString()} B</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Avg</p>
+                  <p className="text-sm font-medium">{sizeStats.avgResp.toLocaleString()} B</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <h3 className="text-lg font-medium mt-4 mb-2">Top Client IPs</h3>
       <div className="bg-gray-50 p-3 rounded">
