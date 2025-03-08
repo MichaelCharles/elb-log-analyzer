@@ -5,6 +5,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  getGroupedRowModel,
+  getExpandedRowModel,
   FilterFn,
   ColumnFiltersState,
   OnChangeFn,
@@ -28,6 +30,8 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
     pageIndex: 0,
     pageSize: 25,
   });
+  const [grouping, setGrouping] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState({});
 
   // Filter function for global filtering
   const globalFilterFn: FilterFn<LogEntry> = (row, columnId, filterValue) => {
@@ -129,15 +133,21 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
         pagination,
         globalFilter,
         columnFilters,
+        grouping,
+        expanded,
       },
       onPaginationChange: setPagination,
       onGlobalFilterChange: setGlobalFilter,
       onColumnFiltersChange: handleColumnFiltersChange,
+      onGroupingChange: setGrouping,
+      onExpandedChange: setExpanded,
       globalFilterFn,
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+      getGroupedRowModel: getGroupedRowModel(),
+      getExpandedRowModel: getExpandedRowModel(),
     });
   } else {
     // Type assertion to handle connection logs
@@ -149,15 +159,21 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
         pagination,
         globalFilter,
         columnFilters,
+        grouping,
+        expanded,
       },
       onPaginationChange: setPagination,
       onGlobalFilterChange: setGlobalFilter,
       onColumnFiltersChange: handleColumnFiltersChange,
+      onGroupingChange: setGrouping,
+      onExpandedChange: setExpanded,
       globalFilterFn,
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
+      getGroupedRowModel: getGroupedRowModel(),
+      getExpandedRowModel: getExpandedRowModel(),
     });
   }
 

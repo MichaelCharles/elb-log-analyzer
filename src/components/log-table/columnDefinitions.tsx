@@ -14,6 +14,7 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
     header: () => 'Protocol',
     cell: info => info.getValue(),
     filterFn: 'equals',
+    enableGrouping: true,
   }),
   accessColumnHelper.accessor(row => row.timestamp, {
     id: 'timestamp',
@@ -61,6 +62,7 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
     header: () => 'Method',
     cell: info => info.getValue(),
     filterFn: 'equals',
+    enableGrouping: true,
   }),
   accessColumnHelper.accessor(row => row.url, {
     id: 'url',
@@ -87,6 +89,8 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
       return <span className={`px-2 py-1 rounded ${bgColor}`}>{value}</span>;
     },
     filterFn: 'equals',
+    enableGrouping: true,
+    aggregationFn: 'count',
   }),
   accessColumnHelper.accessor(row => row.requestSize, {
     id: 'requestSize',
@@ -107,6 +111,7 @@ const getAccessColumnDefinitions = (formatTimestamp: (timestamp: string) => stri
     header: () => 'TLS Protocol',
     cell: info => info.getValue(),
     filterFn: 'equals',
+    enableGrouping: true,
   }),
 ];
 
@@ -134,6 +139,7 @@ const getConnectionColumnDefinitions = (formatTimestamp: (timestamp: string) => 
     cell: info => info.getValue(),
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableGrouping: true,
   }),
   connectionColumnHelper.accessor(row => row.clientPort, {
     id: 'clientPort',
@@ -148,18 +154,21 @@ const getConnectionColumnDefinitions = (formatTimestamp: (timestamp: string) => 
     cell: info => info.getValue(),
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableGrouping: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsProtocol, {
     id: 'tlsProtocol',
     header: () => 'TLS Protocol',
     cell: info => info.getValue() || '-',
     filterFn: 'equals',
+    enableGrouping: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsCipher, {
     id: 'tlsCipher',
     header: () => 'TLS Cipher',
     cell: info => info.getValue() || '-',
     filterFn: 'equals',
+    enableGrouping: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsHandshakeLatency, {
     id: 'tlsHandshakeLatency',
@@ -185,6 +194,8 @@ const getConnectionColumnDefinitions = (formatTimestamp: (timestamp: string) => 
     },
     filterFn: 'equals',
     enableColumnFilter: true,
+    enableGrouping: true,
+    aggregationFn: 'count',
   }),
 ];
 
