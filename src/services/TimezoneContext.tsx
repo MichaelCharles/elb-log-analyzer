@@ -21,8 +21,8 @@ interface TimezoneProviderProps {
 }
 
 export const TimezoneProvider: React.FC<TimezoneProviderProps> = ({ children }) => {
-  // Initialize with JST as default (to maintain backward compatibility)
-  const [timezone, setTimezone] = useState<TimezoneOption>('jst');
+  // Initialize with UTC as default
+  const [timezone, setTimezone] = useState<TimezoneOption>('utc');
 
   // Format timestamp based on selected timezone
   const formatTimestamp = (timestamp: string): string => {
