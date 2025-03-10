@@ -167,8 +167,10 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
       </div>
 
       <div className="flex justify-between items-start mb-4">
-        {/* Column visibility selector */}
-        <ColumnVisibilitySelector table={table} />
+        <div className="flex flex-col">
+          {/* Column visibility selector */}
+          <ColumnVisibilitySelector table={table} />
+        </div>
         
         {/* Global search component */}
         <GlobalSearch globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />

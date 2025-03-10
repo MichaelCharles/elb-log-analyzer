@@ -17,24 +17,52 @@ const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
       return headerA.localeCompare(headerB);
     });
 
+  const currentGrouping = table.getState().grouping;
+
+  // Function to add or remove a column from grouping
+  const toggleColumnGrouping = (columnId: string) => {
+    const groupingSet = new Set(currentGrouping);
+    if (groupingSet.has(columnId)) {
+      groupingSet.delete(columnId);
+    } else {
+      groupingSet.add(columnId);
+    }
+    table.setGrouping(Array.from(groupingSet));
+  };
+
   return (
-    <div className="flex mb-4 items-center">
-      <label className="mr-2 text-sm font-medium text-gray-700">Group by:</label>
-      <select
-        className="border p-1 rounded text-sm"
-        value={table.getState().grouping[0] || ''}
-        onChange={e => {
-          const columnId = e.target.value;
-          table.setGrouping(columnId ? [columnId] : []);
-        }}
-      >
-        <option value="">None</option>
+    <div className="mb-4">
+      <div className="mb-2 text-sm font-medium text-gray-700">Group by:</div>
+      <div className="flex flex-wrap gap-2">
         {columns.map(column => (
-          <option key={column.id} value={column.id}>
-            {String(column.columnDef.header || column.id)}
-          </option>
+          <div 
+            key={column.id}
+            onClick={() => toggleColumnGrouping(column.id)}
+            className={`px-3 py-1 rounded text-sm cursor-pointer border ${
+              currentGrouping.includes(column.id)
+                ? 'bg-blue-100 border-blue-300 text-blue-700'
+                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center">
+              {currentGrouping.includes(column.id) && (
+                <span className="mr-1 text-xs">
+                  ({currentGrouping.indexOf(column.id) + 1})
+                </span>
+              )}
+              {String(column.columnDef.header || column.id)}
+            </div>
+          </div>
         ))}
-      </select>
+        {currentGrouping.length > 0 && (
+          <div 
+            onClick={() => table.setGrouping([])}
+            className="px-3 py-1 rounded text-sm cursor-pointer border border-red-300 bg-red-50 text-red-700 hover:bg-red-100"
+          >
+            Clear All
+          </div>
+        )}
+      </div>
     </div>
   );
 };

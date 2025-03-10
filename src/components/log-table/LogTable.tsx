@@ -52,10 +52,10 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                           const groupingSet = new Set(table.getState().grouping);
                           if (groupingSet.has(header.column.id)) {
                             groupingSet.delete(header.column.id);
-                            table.setGrouping(Array.from(groupingSet));
                           } else {
-                            table.setGrouping([header.column.id]);
+                            groupingSet.add(header.column.id);
                           }
+                          table.setGrouping(Array.from(groupingSet));
                         }}
                         className={`ml-1 p-1 text-xs rounded hover:bg-gray-200 ${
                           table.getState().grouping.includes(header.column.id)
@@ -64,21 +64,28 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                         }`}
                         title="Group by this column"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect x="3" y="3" width="18" height="18" rx="2" />
-                          <path d="M3 9h18" />
-                          <path d="M9 21V9" />
-                        </svg>
+                        <div className="flex items-center">
+                          {table.getState().grouping.includes(header.column.id) && (
+                            <span className="mr-1 text-xs">
+                              {table.getState().grouping.indexOf(header.column.id) + 1}
+                            </span>
+                          )}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M3 9h18" />
+                            <path d="M9 21V9" />
+                          </svg>
+                        </div>
                       </button>
                     )}
                   </div>
@@ -111,7 +118,13 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                       <div className="flex items-center">
                         <span className="mr-2">{row.getIsExpanded() ? '▼' : '▶'}</span>
                         <span className="font-medium">
-                          {String(cell.column.columnDef.header || cell.column.id)}:{' '}
+                          <span 
+                            className="inline-block px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 text-xs mr-1"
+                          >
+                            {table.getState().grouping.indexOf(cell.column.id) + 1}
+                          </span>
+                          {/* Just display the column ID as a fallback */}
+                          {cell.column.id.charAt(0).toUpperCase() + cell.column.id.slice(1)}:{' '}
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </span>
                         <span className="ml-2 text-gray-500">
