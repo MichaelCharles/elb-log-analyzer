@@ -10,12 +10,14 @@ import {
   FilterFn,
   ColumnFiltersState,
   OnChangeFn,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { LogEntry, LogTypeOption, logTypeDisplayNames } from '../../types/LogTypes';
 import { ColumnDefinitions } from './columnDefinitions';
 import GlobalSearch from './GlobalSearch';
 import LogTable from './LogTable';
 import TablePagination from './TablePagination';
+import ColumnVisibilitySelector from './ColumnVisibilitySelector';
 
 interface LogViewerContainerProps {
   logs: LogEntry[];
@@ -26,6 +28,11 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
   // Table state - properly type the columnFilters state
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    leafClientCertSubject: false,
+    leafClientCertValidity: false,
+    leafClientCertSerialNumber: false,
+  });
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 25,
@@ -130,12 +137,14 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
       columnFilters,
       grouping,
       expanded,
+      columnVisibility,
     },
     onPaginationChange: setPagination,
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: handleColumnFiltersChange,
     onGroupingChange: setGrouping,
     onExpandedChange: setExpanded,
+    onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -157,8 +166,13 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
         </div>
       </div>
 
-      {/* Global search component */}
-      <GlobalSearch globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+      <div className="flex justify-between items-start mb-4">
+        {/* Column visibility selector */}
+        <ColumnVisibilitySelector table={table} />
+        
+        {/* Global search component */}
+        <GlobalSearch globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+      </div>
 
       {/* Table component */}
       <LogTable table={table} logs={logs} />

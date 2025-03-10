@@ -16,6 +16,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'equals',
     enableGrouping: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.timestamp, {
     id: 'timestamp',
@@ -36,6 +37,7 @@ export const getAccessColumnDefinitions = (
     },
     filterFn: 'timestampRangeFilter' as any,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.clientAddress, {
     id: 'clientAddress',
@@ -47,6 +49,7 @@ export const getAccessColumnDefinitions = (
     },
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.targetAddress, {
     id: 'targetAddress',
@@ -58,6 +61,7 @@ export const getAccessColumnDefinitions = (
     },
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.method, {
     id: 'method',
@@ -65,6 +69,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'equals',
     enableGrouping: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.url, {
     id: 'url',
@@ -72,6 +77,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.statusCode, {
     id: 'statusCode',
@@ -80,6 +86,7 @@ export const getAccessColumnDefinitions = (
     filterFn: 'equals',
     enableGrouping: true,
     aggregationFn: 'count',
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.requestSize, {
     id: 'requestSize',
@@ -87,6 +94,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'numberRangeFilter' as any,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.responseSize, {
     id: 'responseSize',
@@ -94,6 +102,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'numberRangeFilter' as any,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   accessColumnHelper.accessor(row => row.tlsProtocol, {
     id: 'tlsProtocol',
@@ -101,6 +110,7 @@ export const getAccessColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'equals',
     enableGrouping: true,
+    enableHiding: true,
   }),
 ];
 
@@ -125,6 +135,7 @@ export const getConnectionColumnDefinitions = (
     },
     filterFn: 'timestampRangeFilter' as any,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.clientIp, {
     id: 'clientIp',
@@ -133,6 +144,7 @@ export const getConnectionColumnDefinitions = (
     filterFn: 'includesString',
     enableColumnFilter: true,
     enableGrouping: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.clientPort, {
     id: 'clientPort',
@@ -140,6 +152,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue(),
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.listenerPort, {
     id: 'listenerPort',
@@ -148,6 +161,7 @@ export const getConnectionColumnDefinitions = (
     filterFn: 'includesString',
     enableColumnFilter: true,
     enableGrouping: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsProtocol, {
     id: 'tlsProtocol',
@@ -155,6 +169,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'equals',
     enableGrouping: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsCipher, {
     id: 'tlsCipher',
@@ -162,6 +177,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'equals',
     enableGrouping: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsHandshakeLatency, {
     id: 'tlsHandshakeLatency',
@@ -169,6 +185,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'numberRangeFilter' as any,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.leafClientCertSubject, {
     id: 'leafClientCertSubject',
@@ -176,6 +193,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.leafClientCertValidity, {
     id: 'leafClientCertValidity',
@@ -183,6 +201,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.leafClientCertSerialNumber, {
     id: 'leafClientCertSerialNumber',
@@ -190,6 +209,7 @@ export const getConnectionColumnDefinitions = (
     cell: info => info.getValue() || '-',
     filterFn: 'includesString',
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   connectionColumnHelper.accessor(row => row.tlsVerifyStatus, {
     id: 'tlsVerifyStatus',
@@ -199,5 +219,6 @@ export const getConnectionColumnDefinitions = (
     enableColumnFilter: true,
     enableGrouping: true,
     aggregationFn: 'count',
+    enableHiding: true,
   }),
 ];
