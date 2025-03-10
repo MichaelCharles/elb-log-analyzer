@@ -25,7 +25,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
       let ip;
       if (logType === 'access') {
         // For access logs, get IP from clientAddress
-        ip = 'clientAddress' in log ? log.clientAddress.split(':')[0] : 'unknown';
+        ip = 'client_port' in log ? log.client_port.split(':')[0] : 'unknown';
       } else {
         // For connection logs, get IP from clientIp
         ip = 'clientIp' in log ? log.clientIp : 'unknown';
@@ -76,9 +76,9 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
     let count = 0;
 
     logs.forEach(log => {
-      if ('requestSize' in log && 'responseSize' in log) {
-        const reqSize = parseInt(log.requestSize) || 0;
-        const respSize = parseInt(log.responseSize) || 0;
+      if ('received_bytes' in log && 'sent_bytes' in log) {
+        const reqSize = parseInt(log.received_bytes as string) || 0;
+        const respSize = parseInt(log.sent_bytes as string) || 0;
 
         totalReqSize += reqSize;
         totalRespSize += respSize;
@@ -105,12 +105,17 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-xl font-semibold">{logTypeDisplayNames[logType]} Statistics</h2>
         {logs.length > 0 && (
-          <button
-            onClick={onClearData}
-            className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 text-sm"
-          >
-            Clear All Data
-          </button>
+          <div className="flex flex-col items-end">
+            <button
+              onClick={onClearData}
+              className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 text-sm"
+            >
+              Clear All Data
+            </button>
+            {logType === 'access' && (
+              <div className="text-xs text-gray-500 italic mt-1">Storing latest 500 logs only</div>
+            )}
+          </div>
         )}
       </div>
 
@@ -128,7 +133,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               <p className="text-2xl font-bold">
                 {
                   logs.filter(
-                    log => 'statusCode' in log && log.statusCode >= '200' && log.statusCode < '300'
+                    log => 'elb_status_code' in log && log.elb_status_code >= '200' && log.elb_status_code < '300'
                   ).length
                 }
               </p>
@@ -138,7 +143,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               <p className="text-2xl font-bold">
                 {
                   logs.filter(
-                    log => 'statusCode' in log && log.statusCode >= '300' && log.statusCode < '400'
+                    log => 'elb_status_code' in log && log.elb_status_code >= '300' && log.elb_status_code < '400'
                   ).length
                 }
               </p>
@@ -148,7 +153,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               <p className="text-2xl font-bold">
                 {
                   logs.filter(
-                    log => 'statusCode' in log && log.statusCode >= '400' && log.statusCode < '500'
+                    log => 'elb_status_code' in log && log.elb_status_code >= '400' && log.elb_status_code < '500'
                   ).length
                 }
               </p>
@@ -158,7 +163,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ logs, onClearData, lo
               <p className="text-2xl font-bold">
                 {
                   logs.filter(
-                    log => 'statusCode' in log && log.statusCode >= '500' && log.statusCode < '600'
+                    log => 'elb_status_code' in log && log.elb_status_code >= '500' && log.elb_status_code < '600'
                   ).length
                 }
               </p>

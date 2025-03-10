@@ -18,31 +18,55 @@ const TableFilter: React.FC<TableFilterProps> = ({ column, logs }) => {
     return null;
   }
 
-  // For timestamp column, use the DateRangeFilter
-  if (column.id === 'timestamp') {
+  // For timestamp columns, use the DateRangeFilter
+  if (column.id === 'timestamp' || column.id === 'time' || column.id === 'request_creation_time') {
     return <DateRangeFilter column={column} />;
   }
 
   // Access log columns
   if (logType === 'access') {
     // For client, target, and url columns, use TextFilter for more flexibility
-    if (column.id === 'clientAddress') {
-      return <TextFilter column={column} placeholder="Filter client IP..." />;
+    if (column.id === 'client_port') {
+      return <TextFilter column={column} placeholder="Filter client..." />;
     }
 
-    if (column.id === 'targetAddress') {
-      return <TextFilter column={column} placeholder="Filter target IP..." />;
+    if (column.id === 'target_port') {
+      return <TextFilter column={column} placeholder="Filter target..." />;
     }
 
-    if (column.id === 'url') {
-      return <TextFilter column={column} placeholder="Filter URL..." />;
+    if (column.id === 'request') {
+      return <TextFilter column={column} placeholder="Filter request..." />;
     }
 
-    // For responseSize column, use NumberRangeFilter
-    if (column.id === 'responseSize' || column.id === 'requestSize') {
-      return (
-        <NumberRangeFilter column={column} placeholder={{ min: 'Min size', max: 'Max size' }} />
-      );
+    if (column.id === 'user_agent') {
+      return <TextFilter column={column} placeholder="Filter user agent..." />;
+    }
+
+    if (column.id === 'trace_id') {
+      return <TextFilter column={column} placeholder="Filter trace ID..." />;
+    }
+
+    if (column.id === 'redirect_url') {
+      return <TextFilter column={column} placeholder="Filter redirect URL..." />;
+    }
+
+    if (column.id === 'error_reason') {
+      return <TextFilter column={column} placeholder="Filter error reason..." />;
+    }
+
+    if (column.id === 'conn_trace_id') {
+      return <TextFilter column={column} placeholder="Filter connection trace ID..." />;
+    }
+
+    // For numeric columns, use NumberRangeFilter
+    if (
+      column.id === 'sent_bytes' ||
+      column.id === 'received_bytes' ||
+      column.id === 'request_processing_time' ||
+      column.id === 'target_processing_time' ||
+      column.id === 'response_processing_time'
+    ) {
+      return <NumberRangeFilter column={column} placeholder={{ min: 'Min', max: 'Max' }} />;
     }
   }
 

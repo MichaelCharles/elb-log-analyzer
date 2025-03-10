@@ -2,6 +2,12 @@ import { LogEntry, LogTypeOption, AccessLogEntry, ConnectionLogEntry } from '../
 
 /**
  * Parse a single access log line from ELB/ALB format into structured AccessLogEntry
+ *
+ * Format: type time elb client:port target:port request_processing_time target_processing_time
+ * response_processing_time elb_status_code target_status_code received_bytes sent_bytes
+ * request user_agent ssl_cipher ssl_protocol target_group_arn trace_id domain_name
+ * chosen_cert_arn matched_rule_priority request_creation_time actions_executed redirect_url
+ * error_reason target:port_list target_status_code_list classification classification_reason conn_trace_id
  */
 export const parseAccessLogLine = (line: string): AccessLogEntry | null => {
   // Skip empty lines
@@ -13,97 +19,137 @@ export const parseAccessLogLine = (line: string): AccessLogEntry | null => {
   if (parts.length < 15) return null;
 
   try {
-    // Extract the key elements from the parts
-    // Format varies but typical ELB log has these main components
-    const protocol = parts[0];
-    const timestamp = parts[1];
+    // Extract the key elements from the parts according to ELB log format
+    const type = parts[0];
+    const time = parts[1];
     const elb = parts[2];
-    const clientAddress = parts[3];
-    const targetAddress = parts[4];
 
-    // Extract request method and URL, accounting for quotes
-    let requestInfo = '';
-    let startIndex = 11;
-    while (startIndex < parts.length && !parts[startIndex].startsWith('"')) {
-      startIndex++;
-    }
+    // Extract client:port and target:port
+    const clientWithPort = parts[3];
+    const targetWithPort = parts[4];
 
-    if (startIndex < parts.length) {
-      // Find the closing quote
-      let endIndex = startIndex + 1;
-      while (endIndex < parts.length && !parts[endIndex].endsWith('"')) {
-        endIndex++;
-      }
+    // Split client and port
+    const clientParts = clientWithPort.split(':');
+    const client_port = clientParts.join(':'); // Keep original format "client:port"
 
-      if (endIndex < parts.length) {
-        requestInfo = parts.slice(startIndex, endIndex + 1).join(' ');
-        // Remove quotes
-        requestInfo = requestInfo.substring(1, requestInfo.length - 1);
-      }
-    }
+    // Split target and port
+    const targetParts = targetWithPort.split(':');
+    const target_port = targetParts.join(':'); // Keep original format "target:port"
 
-    // Parse out method, URL and protocol from request info
-    let method = '';
-    let url = '';
-    let httpVersion = '';
+    const request_processing_time = parts[5];
+    const target_processing_time = parts[6];
+    const response_processing_time = parts[7];
+    const elb_status_code = parts[8];
+    const target_status_code = parts[9];
+    const received_bytes = parts[10];
+    const sent_bytes = parts[11];
 
-    if (requestInfo) {
-      const requestParts = requestInfo.split(' ');
-      if (requestParts.length >= 3) {
-        method = requestParts[0];
-        url = requestParts[1];
-        httpVersion = requestParts[2];
-      }
-    }
+    // Extract request in quotes
+    let request = '';
+    let userAgentStart = 0;
 
-    // Find status code - typically at position 8 in ELB logs
-    let statusCode = '';
-    if (parts.length > 8) {
-      statusCode = parts[8];
-    }
+    // Find request string (it's in quotes)
+    for (let i = 12; i < parts.length; i++) {
+      if (parts[i].startsWith('"')) {
+        // Found the start of request
+        let endIndex = i;
 
-    // Extract request size - typically at position 10
-    let requestSize = '';
-    if (parts.length > 10) {
-      requestSize = parts[10];
-    }
-
-    // Extract response size - typically at position 11
-    let responseSize = '';
-    if (parts.length > 11) {
-      responseSize = parts[11];
-    }
-
-    // Find the TLS information
-    let tlsProtocol = '';
-    let tlsCipher = '';
-
-    // Look for TLS protocol in the log line
-    for (let i = 0; i < parts.length; i++) {
-      if (parts[i].startsWith('TLSv') || parts[i].startsWith('SSLv')) {
-        tlsProtocol = parts[i];
-        // Cipher is typically before the protocol
-        if (i > 0) {
-          tlsCipher = parts[i - 1];
+        // Find the end of the request (closing quote)
+        while (endIndex < parts.length && !parts[endIndex].endsWith('"')) {
+          endIndex++;
         }
-        break;
+
+        if (endIndex < parts.length) {
+          request = parts.slice(i, endIndex + 1).join(' ');
+          // Remove surrounding quotes
+          request = request.substring(1, request.length - 1);
+          userAgentStart = endIndex + 1;
+          break;
+        }
       }
     }
+
+    // Extract user agent (also in quotes)
+    let user_agent = '';
+    let sslCipherIndex = 0;
+
+    if (userAgentStart > 0 && userAgentStart < parts.length) {
+      for (let i = userAgentStart; i < parts.length; i++) {
+        if (parts[i].startsWith('"')) {
+          // Found the start of user agent
+          let endIndex = i;
+
+          // Find the end of the user agent (closing quote)
+          while (endIndex < parts.length && !parts[endIndex].endsWith('"')) {
+            endIndex++;
+          }
+
+          if (endIndex < parts.length) {
+            user_agent = parts.slice(i, endIndex + 1).join(' ');
+            // Remove surrounding quotes
+            user_agent = user_agent.substring(1, user_agent.length - 1);
+            sslCipherIndex = endIndex + 1;
+            break;
+          }
+        }
+      }
+    }
+
+    // Get remaining fields - some may be missing depending on log format
+    const ssl_cipher =
+      sslCipherIndex > 0 && sslCipherIndex < parts.length ? parts[sslCipherIndex] : '';
+    const ssl_protocol = sslCipherIndex + 1 < parts.length ? parts[sslCipherIndex + 1] : '';
+    const target_group_arn = sslCipherIndex + 2 < parts.length ? parts[sslCipherIndex + 2] : '';
+    const trace_id = sslCipherIndex + 3 < parts.length ? parts[sslCipherIndex + 3] : '';
+    const domain_name = sslCipherIndex + 4 < parts.length ? parts[sslCipherIndex + 4] : '';
+    const chosen_cert_arn = sslCipherIndex + 5 < parts.length ? parts[sslCipherIndex + 5] : '';
+    const matched_rule_priority =
+      sslCipherIndex + 6 < parts.length ? parts[sslCipherIndex + 6] : '';
+    const request_creation_time =
+      sslCipherIndex + 7 < parts.length ? parts[sslCipherIndex + 7] : '';
+    const actions_executed = sslCipherIndex + 8 < parts.length ? parts[sslCipherIndex + 8] : '';
+    const redirect_url = sslCipherIndex + 9 < parts.length ? parts[sslCipherIndex + 9] : '';
+    const error_reason = sslCipherIndex + 10 < parts.length ? parts[sslCipherIndex + 10] : '';
+    const target_port_list = sslCipherIndex + 11 < parts.length ? parts[sslCipherIndex + 11] : '';
+    const target_status_code_list =
+      sslCipherIndex + 12 < parts.length ? parts[sslCipherIndex + 12] : '';
+    const classification = sslCipherIndex + 13 < parts.length ? parts[sslCipherIndex + 13] : '';
+    const classification_reason =
+      sslCipherIndex + 14 < parts.length ? parts[sslCipherIndex + 14] : '';
+    const conn_trace_id = sslCipherIndex + 15 < parts.length ? parts[sslCipherIndex + 15] : '';
 
     return {
-      protocol,
-      timestamp,
+      type,
+      time,
+      timestamp: time, // For compatibility with existing code
       elb,
-      clientAddress,
-      targetAddress,
-      method,
-      url,
-      httpVersion,
-      statusCode,
-      requestSize,
-      responseSize,
-      tlsCipher,
-      tlsProtocol,
+      client_port,
+      target_port,
+      request_processing_time,
+      target_processing_time,
+      response_processing_time,
+      elb_status_code,
+      target_status_code,
+      received_bytes,
+      sent_bytes,
+      request,
+      user_agent,
+      ssl_cipher,
+      ssl_protocol,
+      target_group_arn,
+      trace_id,
+      domain_name,
+      chosen_cert_arn,
+      matched_rule_priority,
+      request_creation_time,
+      actions_executed,
+      redirect_url,
+      error_reason,
+      target_port_list,
+      target_status_code_list,
+      classification,
+      classification_reason,
+      conn_trace_id,
       rawLog: line,
     };
   } catch (e) {

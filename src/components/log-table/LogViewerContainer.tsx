@@ -171,7 +171,7 @@ const LogViewerContainer: React.FC<LogViewerContainerProps> = ({ logs, logType }
           {/* Column visibility selector */}
           <ColumnVisibilitySelector table={table} />
         </div>
-        
+
         {/* Global search component */}
         <GlobalSearch globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
       </div>

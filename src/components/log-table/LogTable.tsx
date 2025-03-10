@@ -118,9 +118,7 @@ const LogTable: React.FC<LogTableProps> = ({ table, logs }) => {
                       <div className="flex items-center">
                         <span className="mr-2">{row.getIsExpanded() ? '▼' : '▶'}</span>
                         <span className="font-medium">
-                          <span 
-                            className="inline-block px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 text-xs mr-1"
-                          >
+                          <span className="inline-block px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 text-xs mr-1">
                             {table.getState().grouping.indexOf(cell.column.id) + 1}
                           </span>
                           {/* Just display the column ID as a fallback */}

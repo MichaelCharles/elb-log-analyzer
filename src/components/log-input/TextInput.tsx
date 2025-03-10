@@ -33,6 +33,17 @@ const TextInput: React.FC<TextInputProps> = ({
     try {
       // Process logs based on logType
       const parsedLogs = processLogs(fileContent, logType);
+
+      // Check if we can actually stringify these logs (validate they're serializable)
+      try {
+        JSON.stringify(parsedLogs); // Test serialization before proceeding
+      } catch (jsonErr) {
+        console.error(`Error serializing ${logType} logs:`, jsonErr);
+        setError(`Failed to process ${logType} logs - serialization error.`);
+        setIsLoading(false);
+        return;
+      }
+
       onLogsUpdated(parsedLogs);
       setIsLoading(false);
       setFileContent(''); // Clear the input after processing

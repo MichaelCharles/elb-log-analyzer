@@ -29,12 +29,18 @@ const AppContent: React.FC = () => {
   // Load logs from localStorage on component mount or when logType changes
   useEffect(() => {
     const savedLogs = localStorage.getItem(storageKey);
+
     if (savedLogs) {
       try {
-        setLogs(JSON.parse(savedLogs));
+        const parsedLogs = JSON.parse(savedLogs);
+        setLogs(parsedLogs);
       } catch (e) {
         console.error(`Failed to parse saved ${logType} logs:`, e);
+        // If parsing fails, remove the corrupted data
+        localStorage.removeItem(storageKey);
       }
+    } else {
+      setLogs([]); // Reset logs when switching to a type with no saved data
     }
   }, [logType, setLogs, storageKey]);
 
@@ -42,9 +48,28 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     if (logs.length > 0) {
       try {
-        localStorage.setItem(storageKey, JSON.stringify(logs));
+        // For access logs, limit to last 500 entries to prevent quota issues
+        const logsToSave = logType === 'access' ? logs.slice(-500) : logs;
+
+        localStorage.setItem(storageKey, JSON.stringify(logsToSave));
       } catch (e) {
         console.error(`Failed to save ${logType} logs:`, e);
+
+        // If quota exceeded, try with fewer logs
+        if (e instanceof Error && e.name === 'QuotaExceededError' && logs.length > 100) {
+          try {
+            // Try with just last 100 logs
+            const reducedLogs = logs.slice(-100);
+            localStorage.setItem(storageKey, JSON.stringify(reducedLogs));
+          } catch (innerError) {
+            console.error('Still failed to save even with reduced logs:', innerError);
+          }
+        }
+      }
+    } else {
+      // If we have no logs but had previously saved some, remove them from storage
+      if (localStorage.getItem(storageKey)) {
+        localStorage.removeItem(storageKey);
       }
     }
   }, [logs, logType, storageKey]);

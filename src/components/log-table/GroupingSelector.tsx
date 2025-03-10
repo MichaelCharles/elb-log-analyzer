@@ -35,7 +35,7 @@ const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
       <div className="mb-2 text-sm font-medium text-gray-700">Group by:</div>
       <div className="flex flex-wrap gap-2">
         {columns.map(column => (
-          <div 
+          <div
             key={column.id}
             onClick={() => toggleColumnGrouping(column.id)}
             className={`px-3 py-1 rounded text-sm cursor-pointer border ${
@@ -46,16 +46,14 @@ const GroupingSelector: React.FC<GroupingSelectorProps> = ({ table }) => {
           >
             <div className="flex items-center">
               {currentGrouping.includes(column.id) && (
-                <span className="mr-1 text-xs">
-                  ({currentGrouping.indexOf(column.id) + 1})
-                </span>
+                <span className="mr-1 text-xs">({currentGrouping.indexOf(column.id) + 1})</span>
               )}
               {String(column.columnDef.header || column.id)}
             </div>
           </div>
         ))}
         {currentGrouping.length > 0 && (
-          <div 
+          <div
             onClick={() => table.setGrouping([])}
             className="px-3 py-1 rounded text-sm cursor-pointer border border-red-300 bg-red-50 text-red-700 hover:bg-red-100"
           >

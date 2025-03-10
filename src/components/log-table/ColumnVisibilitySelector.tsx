@@ -65,11 +65,11 @@ const ColumnVisibilitySelector: React.FC<ColumnVisibilitySelectorProps> = ({ tab
             </div>
             <div className="mt-2 space-y-2 max-h-60 overflow-y-auto">
               {allColumns.map(column => {
-                const columnHeader = 
+                const columnHeader =
                   typeof column.columnDef.header === 'function'
                     ? column.columnDef.header({} as any)
                     : column.columnDef.header || column.id;
-                    
+
                 return (
                   <div key={column.id} className="flex items-center">
                     <input
